@@ -43,5 +43,7 @@ def luatots(content):
     content = re.sub(r"\blocal\s", "let ", content)
     # print -> console.log
     content = re.sub(r"\bprint\b", "console.log", content)
+    # class.new(params) -> new class(params)
+    content = re.sub(r"(\w+).new\s*\(", "new \\1(", content)
 
     return content
