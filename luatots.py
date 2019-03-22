@@ -27,12 +27,10 @@ def luatots(content):
     # for
     content = re.sub(r"\bfor\s+(\w+)\s*=\s*(\w+),\s*(\w+)\s*do",
                      "for (var \\1 = \\2; \\1 <= \\3; ++\\1) {", content)
-    # for ipairs
-    content = re.sub(r"\bfor\s+(\w+)\s*,(\w+)\s+in\s+ipairs\((\w+)\)\s*do",
-                     "for (var \\1 in \\3) {\n\tlet \\2 = \\3[\\1]\n", content)
-    # for pairs
-    content = re.sub(r"\bfor\s+(\w+)\s*,(\w+)\s+in\s+pairs\((\w+)\)\s*do",
-                     "for (var \\1 in \\3) {\n\tlet \\2 = \\3[\\1]\n", content)
+    # for ipairs|pairs
+    content = re.sub(
+        r"\bfor\s+(\w+)\s*,\s*(\w+)\s+in\s+(ipairs|pairs)\s*\((\w+)\)\s+do\b",
+        "for (var \\1 in \\4) {\n\tlet \\2 = \\4[\\1]\n", content)
     # nil -> null
     content = re.sub(r"\bnil\b", " null ", content)
     # : -> .
@@ -40,10 +38,10 @@ def luatots(content):
     # self -> this
     content = re.sub(r"\bself\b", "this", content)
     # local -> let
-    content = re.sub(r"\blocal\s", "let ", content)
+    content = re.sub(r"\blocal\b", "let ", content)
     # print -> console.log
     content = re.sub(r"\bprint\b", "console.log", content)
     # class.new(params) -> new class(params)
-    content = re.sub(r"(\w+).new\s*\(", "new \\1(", content)
+    content = re.sub(r"\b(\w+)\s*.\s*new\s*\(", "new \\1(", content)
 
     return content
