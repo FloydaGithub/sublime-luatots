@@ -24,34 +24,33 @@ def luatots(content):
     content = re.sub(r"\belse\b", "} else {", content)
     content = re.sub(r"\bend\b", "}", content)
     content = re.sub(r"\belseif", "} else if (", content)
+    # : -> .
+    content = re.sub(r"\b\:\b", ".", content)
+    # local -> let
+    content = re.sub(r"\blocal\b", "let", content)
+    # local a, b = x, y
+    content = re.sub(
+        r"(let\s+|\b)([\w._\(\)]+)\s*,\s*([\w._\(\)]+)\s*=\s*([\w._\(\)]+)\s*,\s*([\w._\(\)]+)",
+        "\\1\\2 = \\4\n\\1\\3 = \\5", content)
     # for
     content = re.sub(r"\bfor\s+(\w+)\s*=\s*(\w+),\s*(\w+)\s*do",
                      "for (var \\1 = \\2; \\1 <= \\3; ++\\1) {", content)
-    # for ipairs|pairs
-    content = re.sub(
-        r"\bfor\s+(\w+)\s*,\s*(\w+)\s+in\s+(ipairs|pairs)\s*\(([\w._]+)\)\s+do\b",
-        "for (var \\1 in \\4) {\n\tlet \\2 = \\4[\\1]\n", content)
     # for _, v in ipairs|pairs
     content = re.sub(
-        r"\bfor\s+(_)\s*,\s*(\w+)\s+in\s+(ipairs|pairs)\s*\(([\w._]+)\)\s+do\b",
+        r"\bfor\s+(_)\s*,\s*(\w+)\s+in\s+(ipairs|pairs)\s*\(([\w._\(\)]+)\)\s+do\b",
         "for (var ii in \\4) {\n\tlet \\2 = \\4[ii]\n", content)
     # for k, _ in ipairs|pairs
     content = re.sub(
-        r"\bfor\s+(\w+)\s*,\s*(_)\s+in\s+(ipairs|pairs)\s*\(([\w._]+)\)\s+do\b",
+        r"\bfor\s+(\w+)\s*,\s*(_)\s+in\s+(ipairs|pairs)\s*\(([\w._\(\)]+)\)\s+do\b",
         "for (var ii in \\4) {", content)
-    # local a, b = x, y
+    # for ipairs|pairs
     content = re.sub(
-        r"(local\s+|\b)([\w._]+)\s*,\s*([\w._]+)\s*=\s*([\w._]+)\s*,\s*([\w._]+)",
-        "\\1\\2 = \\4\n\\1\\3 = \\5", content)
-
+        r"\bfor\s+(\w+)\s*,\s*(\w+)\s+in\s+(ipairs|pairs)\s*\(([\w._\(\)]+)\)\s+do\b",
+        "for (var \\1 in \\4) {\n\tlet \\2 = \\4[\\1]\n", content)
     # nil -> null
     content = re.sub(r"\bnil\b", " null", content)
-    # : -> .
-    content = re.sub(r"\b\:\b", ".", content)
     # self -> this
     content = re.sub(r"\bself\b", "this", content)
-    # local -> let
-    content = re.sub(r"\blocal\b", "let", content)
     # print -> console.log
     content = re.sub(r"\bprint\b", "console.log", content)
     # class.new(params) -> new class(params)
