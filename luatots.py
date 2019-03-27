@@ -19,8 +19,8 @@ def luatots(content):
     content = re.sub(r"~=", "!=", content)
     content = re.sub(r"#((\w|\.)*)", "\\1.length", content)
     # if / then / else
-    content = re.sub(r"\bif\b", " if (", content)
-    content = re.sub(r"\bthen\b", " ) {", content)
+    content = re.sub(r"\bif\b", "if (", content)
+    content = re.sub(r"\bthen\b", ") {", content)
     content = re.sub(r"\belse\b", "} else {", content)
     content = re.sub(r"\bend\b", "}", content)
     content = re.sub(r"\belseif", "} else if (", content)
@@ -48,7 +48,7 @@ def luatots(content):
         r"\bfor\s+(\w+)\s*,\s*(\w+)\s+in\s+(ipairs|pairs)\s*\(([\w._\(\)]+)\)\s+do\b",
         "for (var \\1 in \\4) {\n\tlet \\2 = \\4[\\1]\n", content)
     # nil -> null
-    content = re.sub(r"\bnil\b", " null", content)
+    content = re.sub(r"\bnil\b", "null", content)
     # self -> this
     content = re.sub(r"\bself\b", "this", content)
     # print -> console.log
